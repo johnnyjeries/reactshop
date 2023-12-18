@@ -1,0 +1,57 @@
+*{
+  font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+body{
+  background-color: rgb(233, 226, 218);
+  overflow-x: hidden;
+  min-height:200vh;
+}
+
+.page-title{
+  text-align: center;
+  margin:3% 0 3% 0;
+}
+.product-div{
+  border: black solid 1px;
+  background-color:whitesmoke;
+  font-size: 20px;
+  border-radius:2%;
+  padding: 15px;
+  width: 800px;
+}
+
+.combobox{
+  width: 250px;
+  font-size: 20px;
+  margin-top:10px;
+}
+
+.search{
+  width: 85px;
+  margin-top: 10px;
+}
+
+.table-style {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid black;
+}
+
+.table-style th,
+.table-style td {
+  width: 25%; /* Set the width as per your requirement */
+  border: 1px solid black;
+  padding: 8px;
+}
+
+
+.mini-title{
+  margin-top: 50px;
+}
+
+@media screen and ( min-width: 700px) {
+  .product-div{
+    margin-left: 30px;
+  }
+}
