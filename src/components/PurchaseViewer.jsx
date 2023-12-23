@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 
 const PurchaseViewer = () => {
@@ -11,6 +11,15 @@ const PurchaseViewer = () => {
     const [selectedDates, setDate] = useState('');
     const [ searchCustomers, setSearchCustomers ] = useState('');
     const [ searchProducts, setSearchProducts ] = useState('');
+    const [ searchClicked, setSearchClicked ] = useState('');
+    const [purchasedProducts, setPurchasedProducts] = useState([]);
+    const [ purchasesDetails, setPurchasesDetails] = useState([]);
+    const [ selectedPurchasedProduct, setPurchaseSelectedProduct] = useState([]);
+
+      // useEffect to handle the asynchronous state updates
+    useEffect(() => {
+        searchCustomersTable();
+    }, [searchProducts]);
 
   // Search customers
   const searchCustomersTable = () => {
@@ -19,6 +28,33 @@ const PurchaseViewer = () => {
       customer.firstName.toLowerCase() === searchCustomer
     );
     setSearchCustomers(filteredCustomers);
+
+    if (filteredCustomers.length > 0 ){
+        const theCustomer = filteredCustomers[0];
+        const selectedCustomerId = theCustomer.id;
+        //get purchases
+        const customerPurchases = purchases.filter((purchase) => purchase.customerId === selectedCustomerId);
+        setPurchasesDetails(customerPurchases);
+        if(searchProducts.length < 1){
+            //extract products ids
+            const productIds = customerPurchases.map((purchase)=> purchase.productId);
+            //get products details
+            const productsBoughtDetails = products.filter((product)=> productIds.includes(product.id));
+            setPurchasedProducts(productsBoughtDetails);
+            console.log(searchProducts);
+        } else if (searchProducts.length > 0){
+            const selectedProductId = searchProducts[0].id;
+            const productPurchases = purchases.filter(
+                (purchase) => purchase.customerId === selectedCustomerId && purchase.productId === selectedProductId
+              );
+              setPurchasesDetails(productPurchases);
+              //get details of this selected product
+              const selectedProductDetails = products.find((product) => product.id === selectedProductId);
+              setPurchaseSelectedProduct([selectedProductDetails]);
+              console.log(selectedProductDetails);
+
+        }
+    }
   };
 
   // Search products
@@ -34,7 +70,7 @@ const PurchaseViewer = () => {
   const searchTable = () => {
     searchCustomersTable();
     searchProductsTable();
-    console.log(searchCustomers + ' ' + searchProducts);
+    setSearchClicked(true);
   };
 
 
@@ -65,32 +101,66 @@ const PurchaseViewer = () => {
                 <button className='btn btn-primary search' onClick={ () => searchTable() }>Search</button>
             </div>
         </div>
-        { (searchCustomers.length > 0 || searchProducts.length > 0) && (
+        { (searchClicked) && (
             <div className='purchases-table'>
                 <table className='table-style'>
                 <thead>
                     <tr>
                     <th>Customer Name</th>
                     <th>Product Name</th>
+                    <th>Purchase Date</th>
                     {/* Add more headers if needed */}
                     </tr>
                 </thead>
                 <tbody>
                     {/* Display filtered customers */}
-                    {searchCustomers.map((customer) => (
-                    <tr key={customer.id}>
-                        <td>{customer.firstName}</td>
-                        <td></td> {/* Add more columns if needed */}
-                    </tr>
-                    ))}
-                    
-                    {/* Display filtered products */}
-                    {searchProducts.map((product) => (
-                    <tr key={product.id}>
-                        <td></td> {/* Add more columns if needed */}
-                        <td>{product.name}</td>
-                    </tr>
-                    ))}
+                    {searchCustomers.length > 0 ? (
+                    searchCustomers.map((customer) => (
+                            <tr key={customer.id}>
+                                <td>{customer.firstName}</td>
+                                { selectedPurchasedProduct.length === 0 ?(
+                                <>
+                                    <td>
+                                        {/* Display purchased products for the selected customer */}
+                                        { purchasedProducts.map((purchasedProduct) => (
+                                        <p key={purchasedProduct.id}>{purchasedProduct.name}</p>
+                                        ))}
+                                    </td>
+                                    <td>
+                                        {/* Display dates for the purchased products */}
+                                        {purchasesDetails.map((purchasedProduct) => (
+                                        <p key={purchasedProduct.id}>{purchasedProduct.date}</p>
+                                        ))}
+                                    </td>
+                                </>
+                                ): (
+                                    <>
+                                    <td>
+                                        {/* Display purchased products for the selected customer */}
+                                        { selectedPurchasedProduct.map((purchasedProduct) => (
+                                        <p key={purchasedProduct.id}>{purchasedProduct.name}</p>
+                                        ))}
+                                    </td>
+                                    <td>
+                                        {/* Display dates for the purchased products */}
+                                        {purchasesDetails.map((purchasedProduct) => (
+                                        <p key={purchasedProduct.id}>{purchasedProduct.date}</p>
+                                        ))}
+                                    </td>
+                                </>
+                                ) }
+                            </tr>
+                    ))
+                    ) : (
+                    customers ? (
+                        customers.map((customer) => (
+                        <tr key={customer.id}>
+                            <td>{customer.firstName}</td>
+                            <td></td> {/* Add more columns if needed */}
+                        </tr>
+                        ))
+                    ) : null
+                    )}
                 </tbody>
                 </table>
             </div>
