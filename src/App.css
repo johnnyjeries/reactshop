@@ -3,9 +3,9 @@
 }
 
 body{
-  background-color: rgb(233, 226, 218);
+  background: linear-gradient(to right, rgb(209, 187, 244), rgb(177, 235, 250));
   overflow-x: hidden;
-  min-height:200vh;
+  min-height:auto;
 }
 
 .page-title{
@@ -18,7 +18,7 @@ body{
   font-size: 20px;
   border-radius:2%;
   padding: 15px;
-  width: 800px;
+  width: 600px;
 }
 
 .combobox{

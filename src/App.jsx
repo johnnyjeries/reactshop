@@ -10,7 +10,7 @@ function App() {
 
   return (
     <>
-      <div className='custom-container' style={{}}>
+      <div className='custom-container' style={{marginBottom:'200px'}}>
         <NavBar/>
         <Footer/>
       </div>

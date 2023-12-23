@@ -34,7 +34,7 @@ const ProductViewer = () => {
       <h2 className="page-title">Products</h2>
       <h4 style={{ textAlign: 'left', marginBottom: '30px' }}>Amount of purchased products: {purchases.length}</h4>
       {products.map((product) => (
-        <div className="col-6 product-div row" key={product.id}>
+        <div className="col-6 product-div row col-sm-12 col-xs-12" key={product.id}>
           <div className="">
             <Link to={`/editProduct/${product.id}`}>
               <p>Name: {product.name}</p>
