@@ -28,7 +28,7 @@ const PurchaseViewer = () => {
       customer.firstName.toLowerCase() === searchCustomer
     );
     setSearchCustomers(filteredCustomers);
-
+    setPurchasedProducts([]);
     if (filteredCustomers.length > 0 ){
         const theCustomer = filteredCustomers[0];
         const selectedCustomerId = theCustomer.id;
@@ -59,11 +59,17 @@ const PurchaseViewer = () => {
 
   // Search products
   const searchProductsTable = () => {
-    const searchProduct = selectedProducts.toLowerCase();
-    const filteredProducts = products.filter((product) =>
-      product.name.toLowerCase() === searchProduct
-    );
-    setSearchProducts(filteredProducts);
+    if (selectedProducts.length > 0) {
+        const searchProduct = selectedProducts.toLowerCase();
+        const filteredProducts = products.filter((product) =>
+        product.name.toLowerCase() === searchProduct
+        );
+        setSearchProducts(filteredProducts);
+        console.log(filteredProducts)
+    } else {
+        setSearchProducts(purchasedProducts);
+        console.log(purchasedProducts);
+    }
   };
 
   // Search table
@@ -82,7 +88,8 @@ const PurchaseViewer = () => {
         </h2>
         <div className='row d-flex'>
             <div className='col-6'>
-                <select name="products" className='combobox' onChange={ (e) => { setProduct(e.target.value) }}>
+                <select name="products" className='combobox' onChange={ (e) => { setProduct(e.target.value);    setSearchClicked(false);
+ }}>
                     <option value="">Select Product</option>
                     {products.map((product) => (
                         <option key={product.id}>{product.name}</option>
@@ -109,25 +116,21 @@ const PurchaseViewer = () => {
                     <th>Customer Name</th>
                     <th>Product Name</th>
                     <th>Purchase Date</th>
-                    {/* Add more headers if needed */}
                     </tr>
                 </thead>
                 <tbody>
-                    {/* Display filtered customers */}
                     {searchCustomers.length > 0 ? (
                     searchCustomers.map((customer) => (
                             <tr key={customer.id}>
                                 <td>{customer.firstName}</td>
-                                { selectedPurchasedProduct.length === 0 ?(
+                                { selectedProducts.length === 0 && searchClicked ?(
                                 <>
                                     <td>
-                                        {/* Display purchased products for the selected customer */}
                                         { purchasedProducts.map((purchasedProduct) => (
                                         <p key={purchasedProduct.id}>{purchasedProduct.name}</p>
                                         ))}
                                     </td>
                                     <td>
-                                        {/* Display dates for the purchased products */}
                                         {purchasesDetails.map((purchasedProduct) => (
                                         <p key={purchasedProduct.id}>{purchasedProduct.date}</p>
                                         ))}
@@ -136,13 +139,11 @@ const PurchaseViewer = () => {
                                 ): (
                                     <>
                                     <td>
-                                        {/* Display purchased products for the selected customer */}
                                         { selectedPurchasedProduct.map((purchasedProduct) => (
                                         <p key={purchasedProduct.id}>{purchasedProduct.name}</p>
                                         ))}
                                     </td>
                                     <td>
-                                        {/* Display dates for the purchased products */}
                                         {purchasesDetails.map((purchasedProduct) => (
                                         <p key={purchasedProduct.id}>{purchasedProduct.date}</p>
                                         ))}
@@ -156,7 +157,6 @@ const PurchaseViewer = () => {
                         customers.map((customer) => (
                         <tr key={customer.id}>
                             <td>{customer.firstName}</td>
-                            <td></td> {/* Add more columns if needed */}
                         </tr>
                         ))
                     ) : null
