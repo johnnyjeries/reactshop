@@ -18,9 +18,12 @@ const PurchaseViewer = () => {
     const [ customerProductMatch, setCustomerProductMatch ] = useState('');
 
       // useEffect to handle the asynchronous state updates
-    useEffect(() => {
-        searchCustomersTable();
-    }, [searchProducts, searchCustomers]);
+      useEffect(() => {
+        if (searchClicked) {
+          searchCustomersTable();
+        }
+      }, [searchClicked, selectedCustomers, customers, products, purchases, searchProducts]);
+      
 
   // Search customers
   const searchCustomersTable = () => {
