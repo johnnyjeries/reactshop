@@ -15,11 +15,12 @@ const PurchaseViewer = () => {
     const [purchasedProducts, setPurchasedProducts] = useState([]);
     const [ purchasesDetails, setPurchasesDetails] = useState([]);
     const [ selectedPurchasedProduct, setPurchaseSelectedProduct] = useState([]);
+    const [ customerProductMatch, setCustomerProductMatch ] = useState('');
 
       // useEffect to handle the asynchronous state updates
     useEffect(() => {
         searchCustomersTable();
-    }, [searchProducts]);
+    }, [searchProducts, searchCustomers]);
 
   // Search customers
   const searchCustomersTable = () => {
@@ -34,6 +35,7 @@ const PurchaseViewer = () => {
         const selectedCustomerId = theCustomer.id;
         //get purchases
         const customerPurchases = purchases.filter((purchase) => purchase.customerId === selectedCustomerId);
+        customerPurchases ? setCustomerProductMatch(true) : null;
         setPurchasesDetails(customerPurchases);
         if(searchProducts.length < 1){
             //extract products ids
@@ -58,14 +60,14 @@ const PurchaseViewer = () => {
   };
 
   // Search products
-  const searchProductsTable = () => {
-    if (selectedProducts.length > 0) {
-        const searchProduct = selectedProducts.toLowerCase();
-        const filteredProducts = products.filter((product) =>
-        product.name.toLowerCase() === searchProduct
-        );
-        setSearchProducts(filteredProducts);
-        console.log(filteredProducts)
+    const searchProductsTable = () => {
+        if (selectedProducts.length > 0) {
+            const searchProduct = selectedProducts.toLowerCase();
+            const filteredProducts = products.filter((product) =>
+            product.name.toLowerCase() === searchProduct
+            );
+            setSearchProducts(filteredProducts);
+            console.log(filteredProducts)
     } else {
         setSearchProducts(purchasedProducts);
         console.log(purchasedProducts);
@@ -97,7 +99,7 @@ const PurchaseViewer = () => {
                 </select>
             </div>
             <div className='col-6'>
-                <select name="customers" className='combobox' onChange={ (e) => { setCustomer(e.target.value)}}>
+                <select name="customers" className='combobox' onChange={ (e) => { setCustomer(e.target.value); setSearchClicked(false) }}>
                 <option value="">Select Customer</option>
                     {customers.map((customer) => (
                         <option key={customer.id}>{customer.firstName}</option>
@@ -123,16 +125,16 @@ const PurchaseViewer = () => {
                     searchCustomers.map((customer) => (
                             <tr key={customer.id}>
                                 <td>{customer.firstName}</td>
-                                { selectedProducts.length === 0 && searchClicked ?(
+                                { selectedProducts.length === 0 && searchClicked && customerProductMatch ?(
                                 <>
                                     <td>
                                         { purchasedProducts.map((purchasedProduct) => (
-                                        <p key={purchasedProduct.id}>{purchasedProduct.name}</p>
+                                        <p key={purchasedProduct.productId}>{purchasedProduct.name}</p>
                                         ))}
                                     </td>
                                     <td>
                                         {purchasesDetails.map((purchasedProduct) => (
-                                        <p key={purchasedProduct.id}>{purchasedProduct.date}</p>
+                                        <p key={purchasedProduct.productId}>{purchasedProduct.date}</p>
                                         ))}
                                     </td>
                                 </>
@@ -140,12 +142,12 @@ const PurchaseViewer = () => {
                                     <>
                                     <td>
                                         { selectedPurchasedProduct.map((purchasedProduct) => (
-                                        <p key={purchasedProduct.id}>{purchasedProduct.name}</p>
+                                        <p key={purchasedProduct.productId}>{purchasedProduct.name}</p>
                                         ))}
                                     </td>
                                     <td>
                                         {purchasesDetails.map((purchasedProduct) => (
-                                        <p key={purchasedProduct.id}>{purchasedProduct.date}</p>
+                                        <p key={purchasedProduct.productId}>{purchasedProduct.date}</p>
                                         ))}
                                     </td>
                                 </>
